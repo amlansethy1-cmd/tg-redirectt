@@ -111,9 +111,12 @@ h1{
 .progress-glow{position:absolute;top:0;left:-40px;height:100%;width:40px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent);animation:sweep 2s ease forwards;}
 @keyframes sweep{0%{left:-40px}100%{left:100%}}
 
-/* 🔥 NEW BUTTON STYLES FOR MOBILE FIX */
+/* 🔥 THE NEW BUTTON - FORCES CHROME/SAFARI */
 .redirect-btn {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   width: 100%;
   background: linear-gradient(135deg, var(--red), var(--orange));
   color: #fff;
@@ -126,12 +129,10 @@ h1{
   cursor: pointer;
   margin-bottom: 20px;
   box-shadow: 0 8px 20px rgba(255, 60, 60, 0.3);
-  transition: all 0.2s ease;
   text-decoration: none;
 }
 .redirect-btn:active {
   transform: scale(0.96);
-  box-shadow: 0 4px 10px rgba(255, 60, 60, 0.2);
 }
 
 .status-row{display:flex;align-items:center;justify-content:center;gap:8px;}
@@ -161,9 +162,9 @@ h1{
   </div>
   <div class="label">Secure Redirect</div>
   <h1>Opening Link</h1>
-  <p class="sub">Please tap the button below<br>to continue to your link.</p>
+  <p class="sub">Tap the button below if your<br>browser didn't open automatically.</p>
   
-  <button id="manualBtn" class="redirect-btn">Tap to Open Link</button>
+  <div id="btnContainer"></div>
 
   <div class="progress-track">
     <div class="progress-fill"></div>
@@ -171,7 +172,7 @@ h1{
   </div>
   <div class="status-row">
     <div class="status-dot"></div>
-    <div class="status-text">Ready<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
+    <div class="status-text">Redirecting<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
   </div>
 </div>
 
@@ -182,42 +183,38 @@ h1{
   
   const params = new URLSearchParams(window.location.search);
   const raw = params.get('u');
-  const btn = document.getElementById('manualBtn');
+  const btnContainer = document.getElementById('btnContainer');
 
   if (raw) {
     const targetUrl = decodeURIComponent(raw);
 
-    // Smart Redirect Function (Handles both PC and Mobile safely)
-    const executeRedirect = () => {
-      try {
-        // Try native Telegram open Link
-        tg.openLink(targetUrl);
-      } catch(e) {
-        // Fallback for strict mobile browsers
-        window.location.href = targetUrl;
-      }
-      
-      // Close WebApp after a short delay
-      setTimeout(() => {
-        tg.close();
-      }, 1500);
-    };
+    // 🔥 THE FIX: Using a real HTML <a> tag with target="_blank". 
+    // Telegram is forced to open this in the external Default Browser (Chrome/Safari).
+    btnContainer.innerHTML = `<a href="${targetUrl}" target="_blank" class="redirect-btn" onclick="closeApp()">🚀 Open in Default Browser</a>`;
 
-    // 1. Try Auto-Redirect (Works on PC, might be blocked on mobile)
+    // Try Auto-Redirect (Only using Telegram's Native API, NO window.location hack)
     setTimeout(() => {
       try {
         tg.openLink(targetUrl);
-      } catch(e) {}
+        // Agar auto-open successful raha, toh 1 sec baad WebApp close ho jayega
+        setTimeout(() => tg.close(), 1000);
+      } catch(e) {
+        // Agar mobile ne block kiya, toh error aayega par "udhar hi nahi khulega". 
+        // User ko button dabana padega.
+      }
     }, 800);
 
-    // 2. Manual Button Click (100% Guaranteed to work on Mobile)
-    btn.addEventListener('click', executeRedirect);
-
   } else {
-    // If URL is missing or broken
     document.querySelector('.sub').innerHTML = '❌ Invalid link.<br>Please try again.';
     document.querySelector('.progress-fill').style.background = '#ff3c3c';
-    btn.style.display = 'none';
+  }
+
+  // 🔥 Auto-Close Trigger
+  function closeApp() {
+    // Button click hone ke 1.5 second baad Telegram App khud band ho jayegi
+    setTimeout(() => {
+      tg.close();
+    }, 1500);
   }
 </script>
 </body>
