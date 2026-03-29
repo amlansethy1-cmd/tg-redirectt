@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -163,7 +163,7 @@ h1{
   </div>
   <div class="label">Secure Redirect</div>
   <h1>Opening Link</h1>
-  <p class="sub">Tap the button below to<br>force open in Google Chrome.</p>
+  <p class="sub">Tap the button below to<br>continue to your verification.</p>
   
   <div id="btnContainer"></div>
 
@@ -178,10 +178,12 @@ h1{
 </div>
 
 <script>
+  // 1. Initialize Telegram WebApp
   const tg = window.Telegram.WebApp;
   tg.ready();
   tg.expand();
   
+  // 2. Get the target URL from the parameters
   const params = new URLSearchParams(window.location.search);
   const raw = params.get('u');
   const btnContainer = document.getElementById('btnContainer');
@@ -190,48 +192,36 @@ h1{
   if (raw) {
     const targetUrl = decodeURIComponent(raw);
 
-    btnContainer.innerHTML = `<button id="redirectBtn" class="redirect-btn">🚀 Open in Chrome</button>`;
-    
+    // 3. Render the Button
+    btnContainer.innerHTML = `<button id="redirectBtn" class="redirect-btn">🚀 Open Link</button>`;
     const btn = document.getElementById('redirectBtn');
 
     btn.addEventListener('click', function() {
-      // Button state change
-      this.innerHTML = "⏳ Opening... Please wait";
+      // Change Button UI to show it's working
+      this.innerHTML = "✅ Opened! You can close this.";
       this.style.background = "linear-gradient(135deg, #28a745, #218838)";
       this.style.boxShadow = "0 8px 20px rgba(40, 167, 69, 0.3)";
-      statusText.innerHTML = "Redirecting...";
+      statusText.innerHTML = "Done";
 
-      // 🔥 THE INTENT BYPASS HACK (Forces Android to open Real Chrome)
-      var ua = navigator.userAgent.toLowerCase();
-      var isAndroid = ua.indexOf("android") > -1;
-
-      if (isAndroid) {
-          try {
-              var u = new URL(targetUrl);
-              // intent:// scheme directly talks to Android OS to wake up Chrome App
-              var intentUrl = "intent://" + u.host + u.pathname + u.search + u.hash + "#Intent;scheme=https;package=com.android.chrome;fallback_url=" + encodeURIComponent(targetUrl) + ";end;";
-              window.location.href = intentUrl;
-          } catch (e) {
-              window.location.href = targetUrl;
-          }
-      } else {
-          // iOS / PC fallback
-          try {
-              tg.openLink(targetUrl);
-          } catch (e) {
-              window.open(targetUrl, '_blank');
-          }
+      // 4. 🔥 THE CORE FIX: Open link using official Telegram API
+      try {
+          tg.openLink(targetUrl);
+      } catch(e) {
+          // Absolute fallback if tg.openLink fails
+          window.open(targetUrl, '_blank');
       }
 
-      // Automatically close Telegram WebApp after Chrome is triggered
-      setTimeout(() => {
-          tg.close();
-      }, 1500);
+      // 🛑 NO tg.close() CALLED HERE!
+      // This ensures the browser does not get killed by Telegram snap-back.
+      // User will manually tap the 'X' or swipe down to close the WebApp when they are done.
     });
 
   } else {
+    // Handle Missing URL Error
     document.querySelector('.sub').innerHTML = '❌ Invalid link.<br>Please try again.';
     document.querySelector('.progress-fill').style.background = '#ff3c3c';
+    statusText.innerHTML = "Error";
+    document.querySelector('.status-dot').style.background = '#ff3c3c';
   }
 </script>
 </body>
