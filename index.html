@@ -2,136 +2,102 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Secure Gateway Protocol</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Secure Verification</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* =========================================================
-   ELITE UX/UI DESIGN BY SENIOR ARCHITECT
-   Theme: Cyber-Glass & Deep Neon
+   PREMIUM ENTERPRISE UI/UX BY SENIOR ARCHITECT
+   Theme: Midnight Minimalist (Apple/Stripe inspired)
 ========================================================= */
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
+
 :root {
-  --bg-dark: #09090b;
-  --surface: rgba(24, 24, 27, 0.6);
-  --primary: #00f0ff;    /* Cyber Cyan */
-  --secondary: #7000ff;  /* Deep Purple */
-  --success: #00ff88;    /* Neon Green */
+  --bg-dark: #000000;
+  --card-bg: rgba(24, 24, 27, 0.65);
   --text-main: #ffffff;
-  --text-muted: #a1a1aa;
+  --text-muted: #8a8a93;
+  --border-subtle: rgba(255, 255, 255, 0.1);
+  --border-highlight: rgba(255, 255, 255, 0.2);
+  --primary-btn: #ffffff;
+  --primary-text: #000000;
 }
 
 body {
-  background-color: var(--bg-dark);
-  color: var(--text-main);
-  height: 100vh; width: 100vw;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  overflow: hidden;
-  position: relative;
+  background-color: var(--bg-dark); color: var(--text-main);
+  height: 100vh; width: 100vw; display: flex; align-items: center; justify-content: center;
+  overflow: hidden; position: relative;
 }
 
-/* --- ANIMATED BACKGROUND --- */
-.bg-grid {
-  position: absolute; inset: 0; z-index: 0;
-  background-size: 40px 40px;
-  background-image: linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
-  mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
-  -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+/* --- AMBIENT SUBTLE GLOW --- */
+.ambient-bg {
+  position: absolute; width: 600px; height: 600px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(58, 63, 255, 0.15) 0%, rgba(0,0,0,0) 70%);
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  filter: blur(60px); z-index: 0; animation: breathe 8s ease-in-out infinite alternate;
 }
-.glow-orb {
-  position: absolute; width: 300px; height: 300px; border-radius: 50%;
-  filter: blur(80px); opacity: 0.4; z-index: 1;
-  animation: float 8s infinite alternate ease-in-out;
+@keyframes breathe { 0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.8; } 100% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; } }
+
+/* --- PREMIUM CARD --- */
+.card {
+  position: relative; z-index: 10; width: min(90%, 360px);
+  background: var(--card-bg); border: 1px solid var(--border-subtle);
+  border-radius: 24px; padding: 36px 24px; text-align: center;
+  backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+  box-shadow: 0 24px 48px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.05);
+  animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-.orb-1 { background: var(--primary); top: -100px; left: -100px; }
-.orb-2 { background: var(--secondary); bottom: -100px; right: -100px; animation-delay: -4s; }
+@keyframes fadeUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
 
-@keyframes float { 0% { transform: translate(0, 0); } 100% { transform: translate(40px, 40px); } }
-
-/* --- MAIN CONTAINER --- */
-.container {
-  position: relative; z-index: 10;
-  width: min(90%, 400px);
-  background: var(--surface);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 28px;
-  padding: 32px 24px;
-  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-  box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1);
-  animation: slideUp 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+/* --- ICONS & TYPOGRAPHY --- */
+.icon-container {
+  width: 56px; height: 56px; margin: 0 auto 24px; border-radius: 16px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.02) 100%);
+  border: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.3);
 }
-@keyframes slideUp { 0% { opacity: 0; transform: translateY(40px) scale(0.95); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+.icon-container svg { color: #fff; }
 
-/* --- HEADER & ICONS --- */
-.shield-icon {
-  width: 64px; height: 64px; margin: 0 auto 20px;
-  background: linear-gradient(135deg, rgba(0,240,255,0.2), rgba(112,0,255,0.2));
-  border: 1px solid rgba(0,240,255,0.3);
-  border-radius: 20px; display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 0 20px rgba(0,240,255,0.2);
-  animation: pulseGlow 2s infinite;
-}
-@keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 15px rgba(0,240,255,0.2); } 50% { box-shadow: 0 0 30px rgba(0,240,255,0.5); } }
+h1 { font-size: 22px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.03em; }
+p.desc { font-size: 14px; color: var(--text-muted); line-height: 1.5; margin-bottom: 32px; font-weight: 400; padding: 0 10px; }
 
-h1 { font-size: 24px; font-weight: 800; text-align: center; margin-bottom: 8px; letter-spacing: 0.5px; }
-p.subtitle { text-align: center; font-size: 14px; color: var(--text-muted); line-height: 1.5; margin-bottom: 28px; }
-
-/* --- ACTION BUTTONS --- */
+/* --- PREMIUM BUTTONS --- */
 .btn {
-  width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;
-  padding: 16px; border-radius: 16px; border: none; font-size: 16px; font-weight: 600;
-  cursor: pointer; transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-  position: relative; overflow: hidden;
+  width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 14px 16px; border-radius: 14px; font-size: 15px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); border: none; outline: none;
 }
-.btn:active { transform: scale(0.96); }
+.btn:active { transform: scale(0.97); }
 
-/* The Hero Button */
-.btn-copy {
-  background: linear-gradient(90deg, var(--secondary), var(--primary), var(--secondary));
-  background-size: 200% auto;
-  color: #000; font-weight: 800;
-  box-shadow: 0 10px 25px rgba(0,240,255,0.3);
-  margin-bottom: 16px;
-  animation: gradientFlow 3s linear infinite;
+/* The Hero Copy Button (White/Black high contrast) */
+.btn-primary {
+  background: var(--primary-btn); color: var(--primary-text);
+  box-shadow: 0 4px 14px rgba(255,255,255,0.15); margin-bottom: 12px;
 }
-@keyframes gradientFlow { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
+.btn-primary:hover { background: #f0f0f0; }
 
-.btn-copy.success {
-  background: var(--success); box-shadow: 0 10px 25px rgba(0,255,136,0.3); animation: none; color: #000;
+.btn-primary.success {
+  background: #34c759; color: white; /* Apple native green */
+  box-shadow: 0 4px 14px rgba(52, 199, 89, 0.3);
 }
 
-/* Secondary Button */
-.btn-outline {
-  background: transparent; color: var(--text-main);
-  border: 1px solid rgba(255,255,255,0.15);
+/* Secondary Action */
+.btn-secondary {
+  background: transparent; color: var(--text-muted);
+  border: 1px solid transparent; font-size: 14px; font-weight: 500;
 }
-.btn-outline:hover { background: rgba(255,255,255,0.05); }
-
-/* --- STEP INSTRUCTIONS --- */
-.steps-box {
-  margin-top: 24px; padding: 16px; border-radius: 16px;
-  background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05);
-}
-.step { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-.step:last-child { margin-bottom: 0; }
-.step-num { 
-  display: flex; align-items: center; justify-content: center; 
-  width: 24px; height: 24px; border-radius: 50%; 
-  background: rgba(255,255,255,0.1); font-size: 12px; font-weight: 800; color: var(--primary); 
-}
-.step-text { font-size: 13px; color: var(--text-muted); }
-.step-text span { color: var(--text-main); font-weight: 600; }
+.btn-secondary:hover { color: var(--text-main); }
 
 /* --- TOAST NOTIFICATION --- */
 .toast {
-  position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
-  background: var(--success); color: #000; font-weight: 700; font-size: 14px;
-  padding: 12px 24px; border-radius: 50px; z-index: 100;
-  box-shadow: 0 10px 30px rgba(0,255,136,0.4);
-  display: flex; align-items: center; gap: 8px;
-  transition: top 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  position: fixed; top: -60px; left: 50%; transform: translateX(-50%);
+  background: rgba(30, 30, 32, 0.9); color: #fff; font-weight: 500; font-size: 13px;
+  padding: 10px 20px; border-radius: 100px; border: 1px solid var(--border-highlight);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  display: flex; align-items: center; gap: 8px; z-index: 100;
+  transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 .toast.show { top: 40px; }
 
@@ -139,58 +105,41 @@ p.subtitle { text-align: center; font-size: 14px; color: var(--text-muted); line
 </head>
 <body>
 
-<div class="bg-grid"></div>
-<div class="glow-orb orb-1"></div>
-<div class="glow-orb orb-2"></div>
+<div class="ambient-bg"></div>
 
 <div class="toast" id="toast">
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-  Link Copied Successfully!
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34c759" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+  Link copied to clipboard
 </div>
 
-<div class="container">
-  <div class="shield-icon">
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#00f0ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-    </svg>
+<div class="card" id="mainCard">
+  <div class="icon-container">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
   </div>
   
-  <h1>Bypass Telegram Guard</h1>
-  <p class="subtitle">Telegram blocks ad-links. Use an external browser to continue seamlessly.</p>
+  <h1>Secure Verification</h1>
+  <p class="desc" id="descText">To continue, please copy your secure link and paste it into your device's browser.</p>
 
-  <button class="btn btn-copy" id="copyBtn">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-    COPY SECURE LINK
+  <button class="btn btn-primary" id="copyBtn">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+    Copy Secure Link
   </button>
 
-  <button class="btn btn-outline" id="openBtn">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-    Try Direct Open
+  <button class="btn btn-secondary" id="openBtn">
+    Open Directly (May be blocked)
   </button>
-
-  <div class="steps-box">
-    <div class="step">
-      <div class="step-num">1</div>
-      <div class="step-text">Tap the <span>Copy Secure Link</span> button</div>
-    </div>
-    <div class="step">
-      <div class="step-num">2</div>
-      <div class="step-text">Open <span>Chrome</span> or <span>Safari</span> on your phone</div>
-    </div>
-    <div class="step">
-      <div class="step-num">3</div>
-      <div class="step-text"><span>Paste</span> the link in the search bar and GO!</div>
-    </div>
-  </div>
 </div>
 
 <script>
-  // 1. Initialize Telegram WebApp API safely
+  // 1. Initialize Telegram WebApp
   const tg = window.Telegram.WebApp;
   tg.ready();
   tg.expand();
 
-  // 2. Safely grab and decode the target URL
+  // Telegram native haptic feedback support (Super Premium feel)
+  const haptic = tg.HapticFeedback;
+
+  // 2. Decode URL safely
   const params = new URLSearchParams(window.location.search);
   const rawUrl = params.get('u');
   let targetUrl = "";
@@ -204,31 +153,30 @@ p.subtitle { text-align: center; font-size: 14px; color: var(--text-muted); line
     }
   }
 
-  // Fallback UI if URL is missing
+  // Handle Missing URL gracefully
   if (!targetUrl) {
-    document.querySelector('.subtitle').innerHTML = "<span style='color:#ff3c3c'>❌ Error: Link is broken or missing. Return to bot.</span>";
+    document.getElementById('descText').innerHTML = "Invalid link. Please generate a new one from the bot.";
+    document.getElementById('descText').style.color = "#ff453a"; // Apple red
     document.getElementById('copyBtn').style.display = "none";
     document.getElementById('openBtn').style.display = "none";
-    document.querySelector('.steps-box').style.display = "none";
   }
 
-  // --- CORE UX FUNCTION: COPY TO CLIPBOARD ---
+  // --- PREMIUM COPY INTERACTION ---
   const copyBtn = document.getElementById('copyBtn');
   const toast = document.getElementById('toast');
 
   copyBtn.addEventListener('click', () => {
-    // Advanced clipboard method for mobile compatibility
+    
+    // Copy Logic
     const copyToClipboard = async () => {
       try {
         if (navigator.clipboard && window.isSecureContext) {
           await navigator.clipboard.writeText(targetUrl);
         } else {
-          // Fallback for older WebViews
           let textArea = document.createElement("textarea");
           textArea.value = targetUrl;
           textArea.style.position = "fixed";
-          textArea.style.left = "-999999px";
-          textArea.style.top = "-999999px";
+          textArea.style.opacity = "0";
           document.body.appendChild(textArea);
           textArea.focus();
           textArea.select();
@@ -236,31 +184,34 @@ p.subtitle { text-align: center; font-size: 14px; color: var(--text-muted); line
           textArea.remove();
         }
         
-        // Success UX Feedback
-        if (navigator.vibrate) navigator.vibrate([30, 50, 30]); // Haptic feedback
+        // Haptic Feedback (Uses Telegram's native engine if available)
+        if (haptic) { haptic.impactOccurred('medium'); } 
+        else if (navigator.vibrate) { navigator.vibrate(40); }
         
+        // UI Change
         copyBtn.classList.add("success");
-        copyBtn.innerHTML = "✅ COPIED! PASTE IN CHROME";
-        
+        copyBtn.innerHTML = "Copied! Paste in Safari/Chrome";
         toast.classList.add("show");
         
+        // Reset after 4 seconds
         setTimeout(() => {
           copyBtn.classList.remove("success");
-          copyBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> COPY SECURE LINK`;
+          copyBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Copy Secure Link`;
           toast.classList.remove("show");
-        }, 3000);
+        }, 4000);
 
       } catch (err) {
-        alert("Could not copy. Please try the 'Direct Open' button.");
+        alert("Failed to copy. Please use the Direct Open button.");
       }
     };
     
     copyToClipboard();
   });
 
-  // --- SECONDARY UX FUNCTION: DIRECT OPEN ---
+  // --- SECONDARY OPEN INTERACTION ---
   const openBtn = document.getElementById('openBtn');
   openBtn.addEventListener('click', () => {
+    if (haptic) haptic.impactOccurred('light');
     try {
       tg.openLink(targetUrl);
     } catch(e) {
