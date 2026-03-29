@@ -3,44 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Opening Link...</title>
+<title>Secure Redirect</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --red:#ff3c3c;--orange:#ff7c3c;--gold:#ffd23c;
-  --bg:#06060e;--glass:rgba(255,255,255,0.04);
-  --border:rgba(255,255,255,0.08);
-}
-body{
-  background:var(--bg);
-  font-family:'Inter',sans-serif;
-  height:100vh;width:100vw;
-  display:flex;align-items:center;justify-content:center;
-  overflow:hidden;
-}
+:root{--red:#ff3c3c;--orange:#ff7c3c;--gold:#ffd23c;--bg:#06060e;--glass:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);}
+body{background:var(--bg);font-family:'Inter',sans-serif;height:100vh;width:100vw;display:flex;align-items:center;justify-content:center;overflow:hidden;}
 .bg{position:fixed;inset:0;z-index:0}
-.mesh{
-  position:absolute;inset:0;
-  background:
-    radial-gradient(ellipse 60% 50% at 20% 20%, rgba(255,60,60,0.12) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 60% at 80% 80%, rgba(255,124,60,0.10) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(255,210,60,0.05) 0%, transparent 70%);
-}
-.grid{
-  position:absolute;inset:0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-  background-size:48px 48px;
-  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
-  -webkit-mask-image:radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
-}
-.grain{
-  position:absolute;inset:0;opacity:0.35;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.1'/%3E%3C/svg%3E");
-}
+.mesh{position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 20% 20%,rgba(255,60,60,0.12) 0%,transparent 60%),radial-gradient(ellipse 50% 60% at 80% 80%,rgba(255,124,60,0.10) 0%,transparent 60%),radial-gradient(ellipse 40% 40% at 50% 50%,rgba(255,210,60,0.05) 0%,transparent 70%);}
+.grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black,transparent);-webkit-mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black,transparent);}
+.grain{position:absolute;inset:0;opacity:0.35;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.1'/%3E%3C/svg%3E");}
 .orb{position:absolute;border-radius:50%;filter:blur(100px);animation:float 10s ease-in-out infinite alternate;}
 .o1{width:500px;height:500px;background:rgba(255,60,60,0.08);top:-150px;left:-150px}
 .o2{width:400px;height:400px;background:rgba(255,124,60,0.07);bottom:-120px;right:-120px;animation-delay:-5s}
@@ -48,180 +21,93 @@ body{
 @keyframes float{from{transform:translate(0,0)}to{transform:translate(20px,15px)}}
 @keyframes pulse{0%,100%{opacity:0.5;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.3)}}
 .o3{animation:pulse 6s ease-in-out infinite}
-
-.card{
-  position:relative;z-index:5;
-  width:min(380px,88vw);
-  background:var(--glass);
-  border:1px solid var(--border);
-  border-radius:28px;
-  padding:48px 40px 40px;
-  text-align:center;
-  backdrop-filter:blur(40px);
-  -webkit-backdrop-filter:blur(40px);
-  box-shadow:
-    0 0 0 1px rgba(255,255,255,0.05) inset,
-    0 40px 80px rgba(0,0,0,0.6),
-    0 0 120px rgba(255,60,60,0.06);
-  animation:slideUp 0.9s cubic-bezier(.22,1,.36,1) both;
-}
-@keyframes slideUp{
-  from{opacity:0;transform:translateY(40px) scale(0.96)}
-  to{opacity:1;transform:translateY(0) scale(1)}
-}
-.card::before{
-  content:'';position:absolute;top:0;left:20%;right:20%;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(255,100,60,0.6),transparent);
-  border-radius:1px;
-}
+.card{position:relative;z-index:5;width:min(380px,88vw);background:var(--glass);border:1px solid var(--border);border-radius:28px;padding:48px 40px 40px;text-align:center;backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);box-shadow:0 0 0 1px rgba(255,255,255,0.05) inset,0 40px 80px rgba(0,0,0,0.6),0 0 120px rgba(255,60,60,0.06);animation:slideUp 0.9s cubic-bezier(.22,1,.36,1) both;}
+@keyframes slideUp{from{opacity:0;transform:translateY(40px) scale(0.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+.card::before{content:'';position:absolute;top:0;left:20%;right:20%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,100,60,0.6),transparent);border-radius:1px;}
 .icon-wrap{width:72px;height:72px;margin:0 auto 28px;position:relative;}
-.icon-bg{
-  position:absolute;inset:0;border-radius:20px;
-  background:linear-gradient(135deg,rgba(255,60,60,0.2),rgba(255,124,60,0.1));
-  border:1px solid rgba(255,100,60,0.2);
-}
-.icon-ring{
-  position:absolute;inset:-8px;border-radius:50%;
-  border:1px solid rgba(255,255,255,0.06);
-  animation:spin 4s linear infinite;
-}
-.icon-ring::before{
-  content:'';position:absolute;top:0;left:50%;
-  width:5px;height:5px;background:var(--red);border-radius:50%;
-  transform:translate(-50%,-50%);box-shadow:0 0 8px var(--red);
-}
+.icon-bg{position:absolute;inset:0;border-radius:20px;background:linear-gradient(135deg,rgba(255,60,60,0.2),rgba(255,124,60,0.1));border:1px solid rgba(255,100,60,0.2);}
+.icon-ring{position:absolute;inset:-8px;border-radius:50%;border:1px solid rgba(255,255,255,0.06);animation:spin 4s linear infinite;}
+.icon-ring::before{content:'';position:absolute;top:0;left:50%;width:5px;height:5px;background:var(--red);border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 8px var(--red);}
 @keyframes spin{to{transform:rotate(360deg)}}
 .icon-emoji{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:30px;}
 .label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-bottom:10px;font-weight:500;}
-h1{
-  font-family:'Syne',sans-serif;font-size:32px;font-weight:800;
-  letter-spacing:-0.5px;margin-bottom:8px;
-  background:linear-gradient(135deg,#fff 30%,rgba(255,255,255,0.55));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
+h1{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;letter-spacing:-0.5px;margin-bottom:8px;background:linear-gradient(135deg,#fff 30%,rgba(255,255,255,0.55));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .sub{font-size:13px;color:rgba(255,255,255,0.35);font-weight:300;line-height:1.6;margin-bottom:24px;}
-.progress-track{height:3px;background:rgba(255,255,255,0.06);border-radius:10px;overflow:hidden;margin-bottom:14px;position:relative;}
-.progress-fill{
-  height:100%;width:0;border-radius:10px;
-  background:linear-gradient(90deg,var(--red),var(--orange),var(--gold));
-  animation:fill 2s cubic-bezier(.4,0,.2,1) forwards;
-  box-shadow:0 0 12px rgba(255,80,40,0.6);
-}
-@keyframes fill{0%{width:0}100%{width:100%}}
-.progress-glow{position:absolute;top:0;left:-40px;height:100%;width:40px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent);animation:sweep 2s ease forwards;}
-@keyframes sweep{0%{left:-40px}100%{left:100%}}
-
-/* 🔥 THE NEW BUTTON */
-.redirect-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-  background: linear-gradient(135deg, var(--red), var(--orange));
-  color: #fff;
-  border: none;
-  padding: 16px;
-  border-radius: 14px;
-  font-family: 'Syne', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  margin-bottom: 20px;
-  box-shadow: 0 8px 20px rgba(255, 60, 60, 0.3);
-  text-decoration: none;
-  transition: all 0.3s ease;
-}
-.redirect-btn:active {
-  transform: scale(0.96);
-}
-
+.redirect-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:linear-gradient(135deg,var(--red),var(--orange));color:#fff;border:none;padding:16px;border-radius:14px;font-family:'Syne',sans-serif;font-size:16px;font-weight:700;cursor:pointer;margin-bottom:20px;box-shadow:0 8px 20px rgba(255,60,60,0.3);transition:all 0.3s ease;}
+.redirect-btn:active{transform:scale(0.96);}
 .status-row{display:flex;align-items:center;justify-content:center;gap:8px;}
-.status-dot{width:6px;height:6px;border-radius:50%;background:var(--red);box-shadow:0 0 8px var(--red);animation:blink 1.4s ease infinite;}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--red);box-shadow:0 0 8px var(--red);transition:all 0.3s ease;}
+.status-dot.blink{animation:blink 1.4s ease infinite;}
 @keyframes blink{0%,100%{opacity:0.3}50%{opacity:1}}
 .status-text{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.2);font-weight:500;}
-.dots span{animation:blink 1.2s ease infinite;display:inline-block}
-.dots span:nth-child(2){animation-delay:.2s}
-.dots span:nth-child(3){animation-delay:.4s}
 </style>
 </head>
 <body>
 <div class="bg">
-  <div class="mesh"></div>
-  <div class="grid"></div>
-  <div class="grain"></div>
-  <div class="orb o1"></div>
-  <div class="orb o2"></div>
-  <div class="orb o3"></div>
+  <div class="mesh"></div><div class="grid"></div><div class="grain"></div>
+  <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
 </div>
 
 <div class="card">
-  <div class="icon-wrap">
-    <div class="icon-bg"></div>
-    <div class="icon-ring"></div>
-    <div class="icon-emoji">🚀</div>
-  </div>
+  <div class="icon-wrap"><div class="icon-bg"></div><div class="icon-ring"></div><div class="icon-emoji">🚀</div></div>
   <div class="label">Secure Redirect</div>
   <h1>Opening Link</h1>
   <p class="sub">Tap the button below to<br>continue to your verification.</p>
   
   <div id="btnContainer"></div>
 
-  <div class="progress-track">
-    <div class="progress-fill"></div>
-    <div class="progress-glow"></div>
-  </div>
   <div class="status-row">
-    <div class="status-dot"></div>
-    <div class="status-text" id="statusText">Ready<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
+    <div class="status-dot blink" id="sDot"></div>
+    <div class="status-text" id="statusText">Ready...</div>
   </div>
 </div>
 
 <script>
-  // 1. Initialize Telegram WebApp
   const tg = window.Telegram.WebApp;
   tg.ready();
   tg.expand();
   
-  // 2. Get the target URL from the parameters
   const params = new URLSearchParams(window.location.search);
   const raw = params.get('u');
   const btnContainer = document.getElementById('btnContainer');
   const statusText = document.getElementById('statusText');
+  const sDot = document.getElementById('sDot');
 
   if (raw) {
-    const targetUrl = decodeURIComponent(raw);
+    let targetUrl = decodeURIComponent(raw);
+    
+    // Safety check for valid protocol
+    if (!targetUrl.startsWith('http')) {
+        targetUrl = 'https://' + targetUrl;
+    }
 
-    // 3. Render the Button
     btnContainer.innerHTML = `<button id="redirectBtn" class="redirect-btn">🚀 Open Link</button>`;
     const btn = document.getElementById('redirectBtn');
 
     btn.addEventListener('click', function() {
-      // Change Button UI to show it's working
-      this.innerHTML = "✅ Opened! You can close this.";
+      // 1. Update UI to success state immediately
+      this.innerHTML = "✅ Opened! Close this screen.";
       this.style.background = "linear-gradient(135deg, #28a745, #218838)";
       this.style.boxShadow = "0 8px 20px rgba(40, 167, 69, 0.3)";
-      statusText.innerHTML = "Done";
+      statusText.innerHTML = "Processing request";
+      sDot.classList.remove('blink');
+      sDot.style.background = "#28a745";
+      sDot.style.boxShadow = "0 0 8px #28a745";
 
-      // 4. 🔥 THE CORE FIX: Open link using official Telegram API
+      // 2. THE ULTIMATE FIX: Strictly use official openLink.
+      // Maine saare fallbacks (window.open, location.href) hata diye hain
+      // taaki link galti se bhi is WebApp ke andar load na ho.
       try {
           tg.openLink(targetUrl);
       } catch(e) {
-          // Absolute fallback if tg.openLink fails
-          window.open(targetUrl, '_blank');
+          // Do nothing to prevent internal trapping
       }
-
-      // 🛑 NO tg.close() CALLED HERE!
-      // This ensures the browser does not get killed by Telegram snap-back.
-      // User will manually tap the 'X' or swipe down to close the WebApp when they are done.
     });
-
   } else {
-    // Handle Missing URL Error
     document.querySelector('.sub').innerHTML = '❌ Invalid link.<br>Please try again.';
-    document.querySelector('.progress-fill').style.background = '#ff3c3c';
     statusText.innerHTML = "Error";
-    document.querySelector('.status-dot').style.background = '#ff3c3c';
+    sDot.classList.remove('blink');
+    sDot.style.background = "#ff3c3c";
   }
 </script>
 </body>
