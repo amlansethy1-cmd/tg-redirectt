@@ -111,7 +111,7 @@ h1{
 .progress-glow{position:absolute;top:0;left:-40px;height:100%;width:40px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent);animation:sweep 2s ease forwards;}
 @keyframes sweep{0%{left:-40px}100%{left:100%}}
 
-/* 🔥 THE NEW BUTTON - FORCES CHROME/SAFARI */
+/* 🔥 THE NEW BUTTON */
 .redirect-btn {
   display: flex;
   align-items: center;
@@ -163,7 +163,7 @@ h1{
   </div>
   <div class="label">Secure Redirect</div>
   <h1>Opening Link</h1>
-  <p class="sub">Tap the button below to<br>continue in your browser.</p>
+  <p class="sub">Tap the button below to<br>force open in Google Chrome.</p>
   
   <div id="btnContainer"></div>
 
@@ -190,33 +190,43 @@ h1{
   if (raw) {
     const targetUrl = decodeURIComponent(raw);
 
-    // 🔥 PURE JS BUTTON - No auto-closing, manual trigger only
-    btnContainer.innerHTML = `<button id="redirectBtn" class="redirect-btn">🚀 Open in Chrome / Safari</button>`;
+    btnContainer.innerHTML = `<button id="redirectBtn" class="redirect-btn">🚀 Open in Chrome</button>`;
     
     const btn = document.getElementById('redirectBtn');
 
     btn.addEventListener('click', function() {
-      // User ko UI feedback do
+      // Button state change
       this.innerHTML = "⏳ Opening... Please wait";
       this.style.background = "linear-gradient(135deg, #28a745, #218838)";
       this.style.boxShadow = "0 8px 20px rgba(40, 167, 69, 0.3)";
       statusText.innerHTML = "Redirecting...";
 
-      // Official Telegram WebApp API call to open external browser
-      try {
-        tg.openLink(targetUrl);
-      } catch (e) {
-        // Ultimate fallback
-        window.open(targetUrl, '_blank');
+      // 🔥 THE INTENT BYPASS HACK (Forces Android to open Real Chrome)
+      var ua = navigator.userAgent.toLowerCase();
+      var isAndroid = ua.indexOf("android") > -1;
+
+      if (isAndroid) {
+          try {
+              var u = new URL(targetUrl);
+              // intent:// scheme directly talks to Android OS to wake up Chrome App
+              var intentUrl = "intent://" + u.host + u.pathname + u.search + u.hash + "#Intent;scheme=https;package=com.android.chrome;fallback_url=" + encodeURIComponent(targetUrl) + ";end;";
+              window.location.href = intentUrl;
+          } catch (e) {
+              window.location.href = targetUrl;
+          }
+      } else {
+          // iOS / PC fallback
+          try {
+              tg.openLink(targetUrl);
+          } catch (e) {
+              window.open(targetUrl, '_blank');
+          }
       }
 
-      // CRITICAL FIX: DO NOT use tg.close() here. 
-      // Closing the WebApp kills the OS intent to open the browser on strict mobile devices.
-      // Instead, we just tell the user they can close it manually.
+      // Automatically close Telegram WebApp after Chrome is triggered
       setTimeout(() => {
-          this.innerHTML = "✅ Opened! Close this screen.";
-          statusText.innerHTML = "Done";
-      }, 2000);
+          tg.close();
+      }, 1500);
     });
 
   } else {
