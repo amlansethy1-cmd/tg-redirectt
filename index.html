@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Opening...</title>
+<title>Opening Link...</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -130,6 +130,7 @@ h1{
   margin-bottom: 20px;
   box-shadow: 0 8px 20px rgba(255, 60, 60, 0.3);
   text-decoration: none;
+  transition: all 0.3s ease;
 }
 .redirect-btn:active {
   transform: scale(0.96);
@@ -162,7 +163,7 @@ h1{
   </div>
   <div class="label">Secure Redirect</div>
   <h1>Opening Link</h1>
-  <p class="sub">Tap the button below if your<br>browser didn't open automatically.</p>
+  <p class="sub">Tap the button below to<br>continue in your browser.</p>
   
   <div id="btnContainer"></div>
 
@@ -172,7 +173,7 @@ h1{
   </div>
   <div class="status-row">
     <div class="status-dot"></div>
-    <div class="status-text">Redirecting<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
+    <div class="status-text" id="statusText">Ready<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
   </div>
 </div>
 
@@ -184,37 +185,43 @@ h1{
   const params = new URLSearchParams(window.location.search);
   const raw = params.get('u');
   const btnContainer = document.getElementById('btnContainer');
+  const statusText = document.getElementById('statusText');
 
   if (raw) {
     const targetUrl = decodeURIComponent(raw);
 
-    // 🔥 THE FIX: Using a real HTML <a> tag with target="_blank". 
-    // Telegram is forced to open this in the external Default Browser (Chrome/Safari).
-    btnContainer.innerHTML = `<a href="${targetUrl}" target="_blank" class="redirect-btn" onclick="closeApp()">🚀 Open in Default Browser</a>`;
+    // 🔥 PURE JS BUTTON - No auto-closing, manual trigger only
+    btnContainer.innerHTML = `<button id="redirectBtn" class="redirect-btn">🚀 Open in Chrome / Safari</button>`;
+    
+    const btn = document.getElementById('redirectBtn');
 
-    // Try Auto-Redirect (Only using Telegram's Native API, NO window.location hack)
-    setTimeout(() => {
+    btn.addEventListener('click', function() {
+      // User ko UI feedback do
+      this.innerHTML = "⏳ Opening... Please wait";
+      this.style.background = "linear-gradient(135deg, #28a745, #218838)";
+      this.style.boxShadow = "0 8px 20px rgba(40, 167, 69, 0.3)";
+      statusText.innerHTML = "Redirecting...";
+
+      // Official Telegram WebApp API call to open external browser
       try {
         tg.openLink(targetUrl);
-        // Agar auto-open successful raha, toh 1 sec baad WebApp close ho jayega
-        setTimeout(() => tg.close(), 1000);
-      } catch(e) {
-        // Agar mobile ne block kiya, toh error aayega par "udhar hi nahi khulega". 
-        // User ko button dabana padega.
+      } catch (e) {
+        // Ultimate fallback
+        window.open(targetUrl, '_blank');
       }
-    }, 800);
+
+      // CRITICAL FIX: DO NOT use tg.close() here. 
+      // Closing the WebApp kills the OS intent to open the browser on strict mobile devices.
+      // Instead, we just tell the user they can close it manually.
+      setTimeout(() => {
+          this.innerHTML = "✅ Opened! Close this screen.";
+          statusText.innerHTML = "Done";
+      }, 2000);
+    });
 
   } else {
     document.querySelector('.sub').innerHTML = '❌ Invalid link.<br>Please try again.';
     document.querySelector('.progress-fill').style.background = '#ff3c3c';
-  }
-
-  // 🔥 Auto-Close Trigger
-  function closeApp() {
-    // Button click hone ke 1.5 second baad Telegram App khud band ho jayegi
-    setTimeout(() => {
-      tg.close();
-    }, 1500);
   }
 </script>
 </body>
